@@ -9,20 +9,47 @@ public class InputReader : MonoBehaviour
     [SerializeField] private InputAction pos, press;
 
     [SerializeField] private float swipeThreshold = 100f;
+    [SerializeField] private float tapThreshold = 10f;
+    [SerializeField] private float tapTimeThreshold = .3f;
 
     private Vector2 initialPos;
     private Vector2 currentPos => pos.ReadValue<Vector2>();
+    private float initialTapTime;
 
     public delegate void Swipe(Vector2 direction);
     public event Swipe SwipeTriggered;
+
+    public delegate void Tap(Vector2 position);
+    public event Tap TapTriggered;
 
     private void Awake()
     {
         pos.Enable();
         press.Enable();
 
-        press.performed += _ => { initialPos = currentPos; };
-        press.canceled += _ => { DetectSwipe(); };
+        press.performed += _ => 
+        { 
+            initialPos = currentPos;
+            initialTapTime = Time.time;
+        };
+
+        press.canceled += _ => {
+            float tapDuration = Time.time - initialTapTime;
+            Vector2 delta = currentPos - initialPos;
+
+            if(tapDuration < tapTimeThreshold && delta.magnitude < tapThreshold)
+            {
+                if(TapTriggered != null)
+                {
+                    TapTriggered(currentPos);
+                }
+            }
+            else
+            {
+                DetectSwipe();
+            }
+        
+        };
     }
 
     private void DetectSwipe()

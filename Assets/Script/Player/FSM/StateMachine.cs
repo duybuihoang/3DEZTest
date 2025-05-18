@@ -10,7 +10,7 @@ public class StateMachine : MonoBehaviour
     Dictionary<Type, StateNode> nodes = new Dictionary<Type, StateNode>();
     HashSet<ITransition> anyTransitions = new HashSet<ITransition>();
 
-    private void Update()
+    public void Update()
     {
         var transition = GetTransition();
         if (transition != null)
@@ -21,7 +21,7 @@ public class StateMachine : MonoBehaviour
         current.State?.Update();
     }
 
-    private void FixedUpdate()
+    public void FixedUpdate()
     {
         current.State?.FixedUpdate();
     }
@@ -32,7 +32,7 @@ public class StateMachine : MonoBehaviour
         current.State.OnEnter();
     }
 
-    private void ChangeState(IState state)
+    public void ChangeState(IState state)
     {
         if (state == current) return;
 
@@ -44,7 +44,7 @@ public class StateMachine : MonoBehaviour
         current = nodes[state.GetType()];
     }
 
-    private ITransition GetTransition()
+    public ITransition GetTransition()
     {
         foreach (var transition in anyTransitions)
         {
@@ -64,11 +64,16 @@ public class StateMachine : MonoBehaviour
 
         return null;
     }
-
-    private void AddTransition(IState from, IState to, IPredicate condition)
+    public void AddTransition(IState from, IState to, IPredicate condition)
     {
+
         GetOrAddNode(from).AddTransition(GetOrAddNode(to).State, condition);
-    } 
+    }
+    
+    public void AddAnyTransition(IState to, IPredicate condition)
+    {
+        anyTransitions.Add(new Transition(GetOrAddNode(to).State, condition));
+    }
 
     StateNode GetOrAddNode(IState state)
     {
@@ -77,7 +82,7 @@ public class StateMachine : MonoBehaviour
         if (node == null)
         {
             node = new StateNode(state);
-            nodes.Add(node.GetType(), node);
+            nodes.Add(state.GetType(), node);
         }
         return node;
     }

@@ -1385,6 +1385,8 @@ MonoBehaviour:
       m_Flags: 0
     m_Flags: 0
   swipeThreshold: 100
+  tapThreshold: 10
+  tapTimeThreshold: 0.3
 --- !u!4 &660867233 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8025268549861323299, guid: a389451827f7c29409b3feb7eb971647, type: 3}
