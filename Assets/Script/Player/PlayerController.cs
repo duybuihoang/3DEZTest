@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
         Predicates.Add("HeadPunch", false);
         Predicates.Add("KidneyPunchLeft", false);
         Predicates.Add("KidneyPunchRight", false);
+        Predicates.Add("Stomach Punch", false);
 
 
         #region Components
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
         inputReader.SwipeTriggered += Swipe;
         inputReader.TapTriggered += Tap;
+        inputReader.DoubleTapTriggered += DoubleTap;
 
         #endregion
         #region state
@@ -52,7 +54,7 @@ public class PlayerController : MonoBehaviour
         HeadPunchState headPunchState = new HeadPunchState(this, anim);
         KidneyPunchLeftState kidneyPunchLeftState = new KidneyPunchLeftState(this, anim);
         KidneyPunchRightState kidneyPunchRightState = new KidneyPunchRightState(this, anim);
-        //StomachPunchState stomachPunchState = new StomachPunchState(this, anim);
+        StomachPunchState stomachPunchState = new StomachPunchState(this, anim);
 
 
         #endregion
@@ -67,6 +69,8 @@ public class PlayerController : MonoBehaviour
         At(idleState, kidneyPunchRightState, new FuncPredicate(() => Predicates["KidneyPunchRight"]));
         At(kidneyPunchRightState, idleState, new FuncPredicate(() => !Predicates["KidneyPunchRight"]));
 
+        At(idleState, stomachPunchState, new FuncPredicate(() => Predicates["Stomach Punch"]));
+        At(stomachPunchState, idleState, new FuncPredicate(() => !Predicates["Stomach Punch"]));
         #endregion
 
         stateMachine.SetState(idleState);
@@ -103,6 +107,11 @@ public class PlayerController : MonoBehaviour
     private void Tap(Vector2 position)
     {
         Predicates["HeadPunch"] = true;
+    }
+
+    private void DoubleTap(Vector2 position)
+    {
+        Predicates["Stomach Punch"] = true;
     }
 
 
