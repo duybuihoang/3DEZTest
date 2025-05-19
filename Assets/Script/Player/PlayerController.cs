@@ -9,13 +9,13 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Reference")]
-    [SerializeField] private Rigidbody rb;
+    //[SerializeField] private Rigidbody rb;
+    [SerializeField] private CharacterController controller;
     [SerializeField] private Animator anim;
+    
 
-    //[Header("Moving Data")]
-    //[SerializeField] private float moveSpeed = 5f;
-    //[SerializeField] float rotationSpeed = 15f;
-    //[SerializeField] float smoothTime = 0.2f;
+    [Header("Moving Data")]
+    [SerializeField] private float moveSpeed = 2f;
 
     Dictionary<string, bool> Predicates = new Dictionary<string, bool>();
     
@@ -23,7 +23,11 @@ public class PlayerController : MonoBehaviour
     private InputReader inputReader;
     private StateMachine stateMachine;
 
-    
+    private bool rotateBack = false;
+
+    private Vector3 forwardDirection = new Vector3(-1, 0, 1);
+    private Vector3 backwardDirection = new Vector3(1, 0, -1);
+
 
     private void Awake()
     {
@@ -31,12 +35,14 @@ public class PlayerController : MonoBehaviour
         Predicates.Add("KidneyPunchLeft", false);
         Predicates.Add("KidneyPunchRight", false);
         Predicates.Add("Stomach Punch", false);
+        Predicates.Add("Big Jump", false);
 
 
         #region Components
 
         inputReader = GetComponent<InputReader>();
-        rb = GetComponent<Rigidbody>();
+        //rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
         stateMachine = new StateMachine();
 
@@ -55,6 +61,7 @@ public class PlayerController : MonoBehaviour
         KidneyPunchLeftState kidneyPunchLeftState = new KidneyPunchLeftState(this, anim);
         KidneyPunchRightState kidneyPunchRightState = new KidneyPunchRightState(this, anim);
         StomachPunchState stomachPunchState = new StomachPunchState(this, anim);
+        BigJumpState bigJumpState = new BigJumpState(this, anim);
 
 
         #endregion
@@ -71,6 +78,9 @@ public class PlayerController : MonoBehaviour
 
         At(idleState, stomachPunchState, new FuncPredicate(() => Predicates["Stomach Punch"]));
         At(stomachPunchState, idleState, new FuncPredicate(() => !Predicates["Stomach Punch"]));
+
+        At(idleState, bigJumpState, new FuncPredicate(() => Predicates["Big Jump"]));
+        At(bigJumpState, idleState, new FuncPredicate(() => !Predicates["Big Jump"]));
         #endregion
 
         stateMachine.SetState(idleState);
@@ -82,12 +92,16 @@ public class PlayerController : MonoBehaviour
     }
     private void Any(IState to, IPredicate condition) => stateMachine.AddAnyTransition(to, condition);
 
-
     private void Swipe(Vector2 direction)
     {
         if(Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
         {
-            //move
+            Predicates["Big Jump"] = true;
+            if(direction.y < 0)
+            {
+                rotateBack = true;
+            }
+
         }
         else if (Mathf.Abs(direction.y) <= Mathf.Abs(direction.x))
         {
@@ -100,8 +114,6 @@ public class PlayerController : MonoBehaviour
                 Predicates["KidneyPunchRight"] = true;
             }
         }
-
-
     }
 
     private void Tap(Vector2 position)
@@ -114,6 +126,37 @@ public class PlayerController : MonoBehaviour
         Predicates["Stomach Punch"] = true;
     }
 
+    public void Jump()
+    {
+        Vector3 jumpDirection;
+        Quaternion targetRotation;
+
+        if (rotateBack)
+        {
+            jumpDirection = backwardDirection;
+            targetRotation = Quaternion.LookRotation(backwardDirection);
+        }
+        else
+        {
+            jumpDirection = forwardDirection;
+            targetRotation = Quaternion.LookRotation(forwardDirection);
+        }
+
+        controller.Move(jumpDirection * moveSpeed * Time.deltaTime);
+
+        transform.rotation = targetRotation;
+
+    }
+
+
+    public void ResetRotation()
+    {
+        if (rotateBack)
+        {
+            rotateBack = false;
+            transform.rotation = Quaternion.LookRotation(backwardDirection);
+        }
+    }
 
     private void Update()
     {
