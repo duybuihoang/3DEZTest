@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FPSManager : MonoBehaviour
 {
-    public int target = 30;
+    public int target = 60;
     void Awake()
     {
         QualitySettings.vSyncCount = 0;

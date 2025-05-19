@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+//[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(InputReader))]
 
@@ -86,10 +86,7 @@ public class PlayerController : MonoBehaviour
         stateMachine.SetState(idleState);
     }
 
-    private void At(IState from, IState to, IPredicate condition) 
-    {
-        stateMachine.AddTransition(from, to, condition); 
-    }
+    private void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition); 
     private void Any(IState to, IPredicate condition) => stateMachine.AddAnyTransition(to, condition);
 
     private void Swipe(Vector2 direction)
