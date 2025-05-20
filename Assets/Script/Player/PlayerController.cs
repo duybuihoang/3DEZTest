@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 2f;
 
     Dictionary<string, bool> Predicates = new Dictionary<string, bool>();
+    private string currentAction;
     
 
     private InputReader inputReader;
@@ -27,6 +28,9 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 forwardDirection = new Vector3(-1, 0, 1);
     private Vector3 backwardDirection = new Vector3(1, 0, -1);
+
+    private DamageSender sender;
+    private DamageReceiver receiver;
 
 
     private void Awake()
@@ -44,6 +48,10 @@ public class PlayerController : MonoBehaviour
         //rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+
+        sender = GetComponentInChildren<DamageSender>();
+        receiver = GetComponentInChildren<DamageReceiver>();
+
         stateMachine = new StateMachine();
 
         #endregion
@@ -93,7 +101,7 @@ public class PlayerController : MonoBehaviour
     {
         if(Mathf.Abs(direction.y) > Mathf.Abs(direction.x))
         {
-            Predicates["Big Jump"] = true;
+            currentAction = "Big Jump";
             if(direction.y < 0)
             {
                 rotateBack = true;
@@ -104,22 +112,26 @@ public class PlayerController : MonoBehaviour
         {
             if(direction.x > 0)
             {
-                Predicates["KidneyPunchLeft"] = true;
+                currentAction = "KidneyPunchLeft";
             }
             else
             {
-                Predicates["KidneyPunchRight"] = true;
+                currentAction = "KidneyPunchRight";
             }
         }
+
+        Predicates[currentAction] = true;
     }
 
     private void Tap(Vector2 position)
     {
+        currentAction = "HeadPunch";
         Predicates["HeadPunch"] = true;
     }
 
     private void DoubleTap(Vector2 position)
     {
+        currentAction = "Stomach Punch";
         Predicates["Stomach Punch"] = true;
     }
 
@@ -172,5 +184,37 @@ public class PlayerController : MonoBehaviour
         }
 
         Predicates[state] = false;
+        currentAction = "";
     }
+
+
+    public void SendDamage()
+    {
+        string hitAnimation = "";
+        int damage = 0;
+        switch (currentAction)
+        {
+            case "HeadPunch":
+                hitAnimation = "Head Hit";
+                damage = 1;
+                break;
+            case "KidneyPunchLeft":
+                hitAnimation = "Kidney Hit";
+                damage = 2;
+                break;
+            case "KidneyPunchRight":
+                hitAnimation = "Kidney Hit";
+                damage = 3;
+                break;
+            case "Stomach Punch":
+                hitAnimation = "Stomach Hit";
+                damage = 2;
+                break;
+            default:
+                break;
+        }
+
+        sender.Send(damage, hitAnimation);
+    }
+
 }
