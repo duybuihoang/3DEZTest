@@ -91,6 +91,8 @@ public class EnemyController : Entity
 
 
         stateMachine.SetState(idleState);
+
+        target = GameManager.Instance.GetCurrentPlayer();
     }
 
     private void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -185,10 +187,10 @@ public class EnemyController : Entity
     }
 
 
-    private void OnDrawGizmos()
-    {
-        Debug.DrawLine(this.transform.position, target.transform.position, Color.red);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Debug.DrawLine(this.transform.position, target.transform.position, Color.red);
+    //}
 
     public void ResetRotation()
     {
