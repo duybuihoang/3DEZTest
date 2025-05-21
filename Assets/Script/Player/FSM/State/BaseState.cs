@@ -11,11 +11,20 @@ public abstract class BaseState : IState
 
     #region Animation Hash
     protected static readonly int Idle = Animator.StringToHash("Idle");
+
+    protected static readonly int KidneyHit = Animator.StringToHash("Kidney Hit");
+    protected static readonly int HeadHit = Animator.StringToHash("Head Hit");
+    protected static readonly int StomachHit = Animator.StringToHash("Stomach Hit");
+    protected static readonly int Knockout = Animator.StringToHash("Knocked Out");
+
     protected static readonly int HeadPunch = Animator.StringToHash("Head Punch");
     protected static readonly int StomachPunch = Animator.StringToHash("Stomach Punch");
     protected static readonly int KidneyPunchLeft = Animator.StringToHash("Kidney Punch Left");
     protected static readonly int KidneyPunchRight = Animator.StringToHash("Kidney Punch Right");
     protected static readonly int BigJump = Animator.StringToHash("Big Jump");
+
+    protected bool isHit = false;
+    protected bool isJumping = false;
 
     #endregion
 

@@ -10,6 +10,12 @@ public class EnemyBaseState : IState
     protected const float crossFadeDuration = 0.0f;
 
     protected static readonly int Idle = Animator.StringToHash("Idle");
+    protected static readonly int BigJump = Animator.StringToHash("Big Jump");
+    protected static readonly int HeadPunch = Animator.StringToHash("Head Punch");
+    protected static readonly int StomachPunch = Animator.StringToHash("Stomach Punch");
+    protected static readonly int KidneyPunchLeft = Animator.StringToHash("Kidney Punch Left");
+    protected static readonly int KidneyPunchRight = Animator.StringToHash("Kidney Punch Right");
+
     protected static readonly int KidneyHit = Animator.StringToHash("Kidney Hit");
     protected static readonly int HeadHit = Animator.StringToHash("Head Hit");
     protected static readonly int StomachHit = Animator.StringToHash("Stomach Hit");

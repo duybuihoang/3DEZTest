@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class BigJumpState : BaseState
+public class EnemyBigJumpState : EnemyBaseState
 {
-    public BigJumpState(PlayerController player, Animator anim) : base(player, anim)
+    public EnemyBigJumpState(EnemyController enemy, Animator anim) : base(enemy, anim)
     {
     }
 
@@ -14,20 +13,12 @@ public class BigJumpState : BaseState
         base.OnEnter();
 
         anim.CrossFade(BigJump, crossFadeDuration);
-        isJumping = true;
-    }
-
-    public override void OnExit()
-    {
-        base.OnExit();
-
-        isJumping = false;
     }
 
     public override void FixedUpdate()
     {
         base.FixedUpdate();
 
-        player.Jump();
+        enemy.Jump();
     }
 }

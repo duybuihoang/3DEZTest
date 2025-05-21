@@ -19,6 +19,8 @@ public class DamageReceiver : MonoBehaviour
     public void Deduct(float amount, string attackAnim)
     {
         this.currentHP -= amount;
+        Debug.Log("deduct HP to: " + this.currentHP);
+
         justGotDamage = true;
         this.attackAnimation = attackAnim;
         this.IsDead();

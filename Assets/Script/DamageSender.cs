@@ -7,20 +7,28 @@ public class DamageSender : MonoBehaviour
 {
     private bool canAttack = false;
     public bool CanAttack { get => canAttack; }
-    private DamageReceiver receiver;
+    [SerializeField] private DamageReceiver receiver;
 
     private void OnTriggerEnter(Collider other)
     {
-        receiver = other.GetComponentInChildren<DamageReceiver>();
-        if (receiver)
+        Debug.Log("entered");
+
+        if (other.tag == "receiver")
         {
-            Debug.Log("canAttack");
-            canAttack = true;
+            receiver = other.GetComponentInChildren<DamageReceiver>();
+            Debug.Log(receiver);
+            if (receiver)
+            {
+                Debug.Log(transform.parent.name + " canAttack to : " + receiver);
+                canAttack = true;
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        Debug.Log("exit");
+
         canAttack = false;
         receiver = null;
 
@@ -28,6 +36,7 @@ public class DamageSender : MonoBehaviour
 
     public void Send(float amount, string anim)
     {
+        Debug.Log(receiver);
         receiver?.Deduct(amount, anim);
     }
 }
