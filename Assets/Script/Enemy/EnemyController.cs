@@ -119,7 +119,7 @@ public class EnemyController : Entity
         StomachHitCheck();
         KidneyHitCheck();
         KnockOutCheck();
-        //BehaviourCheck();
+        BehaviourCheck();
 
     }
 
@@ -231,5 +231,11 @@ public class EnemyController : Entity
         {
             Predicates[key] = false;
         }
+    }
+
+
+    public void SetTarget()
+    {
+        target = GameManager.Instance.GetCurrentPlayer();
     }
 }

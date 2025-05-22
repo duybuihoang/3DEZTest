@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - receiver
+  - Input
   layers:
   - Default
   - TransparentFX

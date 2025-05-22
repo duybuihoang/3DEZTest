@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
 
@@ -26,6 +27,8 @@ public class InputReader : MonoBehaviour
     private bool waitingForDoubleTap = false;
     private float lastTapTime = 0f;
     private Vector2 lastTapPosition = Vector2.zero;
+    private bool shouldProcessInput = true;
+
 
     #region events
 
@@ -46,12 +49,17 @@ public class InputReader : MonoBehaviour
         press.Enable();
 
         press.performed += _ => 
-        { 
+        {
+            if (!shouldProcessInput) return;
+
             initialPos = currentPos;
             initialTapTime = Time.time;
         };
 
         press.canceled += _ => {
+
+            if (!shouldProcessInput) return;
+
             float tapDuration = Time.time - initialTapTime;
             Vector2 delta = currentPos - initialPos;
 
@@ -128,4 +136,11 @@ public class InputReader : MonoBehaviour
         }
 
     }
+
+
+    private void Update()
+    {
+        shouldProcessInput = !EventSystem.current.IsPointerOverGameObject();
+    }
+
 }

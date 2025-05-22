@@ -11,7 +11,6 @@ public class DamageSender : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("entered");
 
         if (other.tag == "receiver")
         {
@@ -19,7 +18,6 @@ public class DamageSender : MonoBehaviour
             Debug.Log(receiver);
             if (receiver)
             {
-                Debug.Log(transform.parent.name + " canAttack to : " + receiver);
                 canAttack = true;
             }
         }
@@ -27,7 +25,6 @@ public class DamageSender : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("exit");
 
         canAttack = false;
         receiver = null;

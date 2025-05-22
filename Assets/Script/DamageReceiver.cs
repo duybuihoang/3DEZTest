@@ -20,6 +20,8 @@ public class DamageReceiver : MonoBehaviour
     {
         this.currentHP -= amount;
         Debug.Log("deduct HP to: " + this.currentHP);
+        if(transform.parent.tag == "Player")
+            GameManager.Instance.UpdatePlayerSlider(currentHP / maxHP);
 
         justGotDamage = true;
         this.attackAnimation = attackAnim;

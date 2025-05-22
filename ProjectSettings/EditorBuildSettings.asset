@@ -8,4 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/EZ Assets/Scenes/Demo.unity
     guid: 16aa1c22c0e1ade439b5e19cc32cf326
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: ebd154eea5ff963458c3d13f450624db, type: 2}

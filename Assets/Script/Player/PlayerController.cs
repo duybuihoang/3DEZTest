@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-//[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(InputReader))]
 
 public class PlayerController : MonoBehaviour
 {
@@ -55,7 +54,6 @@ public class PlayerController : MonoBehaviour
 
         #region Components
 
-        inputReader = GetComponent<InputReader>();
         //rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
@@ -68,9 +66,6 @@ public class PlayerController : MonoBehaviour
         #endregion
         #region subscribe input
 
-        inputReader.SwipeTriggered += Swipe;
-        inputReader.TapTriggered += Tap;
-        inputReader.DoubleTapTriggered += DoubleTap;
 
         #endregion
         #region state
@@ -130,7 +125,20 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        target = GameManager.Instance.GetCurrentEnemy();
+        inputReader = GameObject.FindGameObjectWithTag("Input").GetComponent<InputReader>();
+
+        inputReader.SwipeTriggered += Swipe;
+        inputReader.TapTriggered += Tap;
+        inputReader.DoubleTapTriggered += DoubleTap;
+
+        SetTarget();
+    }
+
+    private void OnDestroy()
+    {
+        inputReader.SwipeTriggered -= Swipe;
+        inputReader.TapTriggered -= Tap;
+        inputReader.DoubleTapTriggered -= DoubleTap;
     }
 
     private void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition); 
@@ -307,5 +315,10 @@ public class PlayerController : MonoBehaviour
     {
         GameManager.Instance.OnCharacterKnockOut(this.gameObject);
         Destroy(gameObject);
+    }
+
+    public void SetTarget()
+    {
+        target = GameManager.Instance.GetCurrentEnemy();
     }
 }

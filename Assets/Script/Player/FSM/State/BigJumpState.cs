@@ -12,9 +12,11 @@ public class BigJumpState : BaseState
     public override void OnEnter()
     {
         base.OnEnter();
-
-        anim.CrossFade(BigJump, crossFadeDuration);
-        isJumping = true;
+        if (!isJumping)
+        {
+            anim.CrossFade(BigJump, crossFadeDuration);
+            isJumping = true;
+        }
     }
 
     public override void OnExit()

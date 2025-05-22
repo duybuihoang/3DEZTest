@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 1; i < playerTeam.Count; i++)
         {
-            playerTeam[i] = Instantiate(playerPrefab, playerTeamPlace[i - 1].transform);   
+            playerTeam[i] = Instantiate(playerPrefab, playerTeamPlace[i - 1].transform);
         }
 
         for (int i = 1; i < enemyTeam.Count; i++)
@@ -88,27 +88,38 @@ public class GameManager : MonoBehaviour
             enemyTeam[i] = Instantiate(enemyPrefab, enemyTeamPlace[i - 1].transform);
         }
 
+        for (int i = 0; i < playerTeam.Count; i++)
+        {
+            UIManager.Instance.AddPlayerUIInfo();
+        }
+
 
         playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().EnterArena();
         enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().EnterArena();
+
+        UIManager.Instance.DisableButton(0);
+
     }
 
     public GameObject GetCurrentPlayer() => playerTeam[playerTeamCurrentIndex];
     public GameObject GetCurrentEnemy() => enemyTeam[enemyTeamCurrentIndex];
 
     [ContextMenu("swap")]
-    public void swapCharacter()
+    public void swapCharacter(int idx)
     {
+
         playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().ExitArena();
 
-        int nextPlayerIndex = (playerTeamCurrentIndex + 1) % playerTeam.Count;
+        var temp = playerTeam[playerTeamCurrentIndex].transform.position;
+        playerTeam[playerTeamCurrentIndex].transform.position = playerTeam[idx].transform.position;
+        playerTeam[idx].transform.position = temp;
 
-        var tempPosition = playerTeam[playerTeamCurrentIndex].transform.position;
-        playerTeam[playerTeamCurrentIndex].transform.position = playerTeam[nextPlayerIndex].transform.position;
-        playerTeam[nextPlayerIndex].transform.position = tempPosition;
-
-        playerTeamCurrentIndex = nextPlayerIndex;
+        playerTeamCurrentIndex = idx;
         playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().EnterArena();
+
+        playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().SetTarget();
+        enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().SetTarget();
+
     }
 
     public void OnCharacterKnockOut(GameObject GO)
@@ -116,43 +127,40 @@ public class GameManager : MonoBehaviour
         var player = GO.GetComponent<PlayerController>();
         if (player)
         {
-            int knockOutIndex = playerTeamCurrentIndex;
-            playerTeamCurrentIndex = 0;
+            if (playerTeam.Count <= 1)
+            {
+                Debug.Log("Lose");
 
-            playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().ExitArena();
+            }
+            else
+            {
+                playerTeam.Remove(playerTeam[playerTeamCurrentIndex]);
+                playerTeamCurrentIndex = 0;
+                playerTeam[playerTeamCurrentIndex].transform.position = playerPlace.position;
+                playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().EnterArena();
 
-            int nextPlayerIndex = (playerTeamCurrentIndex + 1) % playerTeam.Count;
-
-            var tempPosition = playerTeam[playerTeamCurrentIndex].transform.position;
-            playerTeam[playerTeamCurrentIndex].transform.position = playerTeam[nextPlayerIndex].transform.position;
-            playerTeam[nextPlayerIndex].transform.position = tempPosition;
-
-            playerTeamCurrentIndex = nextPlayerIndex;
-            playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().EnterArena();
-
-            playerTeam.Remove(playerTeam[knockOutIndex]);
-
+                playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().SetTarget();
+                enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().SetTarget();
+            }
             return;
         }
 
         var enemy = GO.GetComponent<EnemyController>();
         if (enemy)
         {
-            int knockOutIndex = enemyTeamCurrentIndex;
-            enemyTeamCurrentIndex = 0;
-
-            enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().ExitArena();
-
-            int nextEnemyIndex = (enemyTeamCurrentIndex + 1) % enemyTeam.Count;
-
-            var tempPosition = enemyTeam[enemyTeamCurrentIndex].transform.position;
-            enemyTeam[enemyTeamCurrentIndex].transform.position = enemyTeam[nextEnemyIndex].transform.position;
-            enemyTeam[nextEnemyIndex].transform.position = tempPosition;
-
-            enemyTeamCurrentIndex = nextEnemyIndex;
-            enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().EnterArena();
-
-            enemyTeam.Remove(enemyTeam[knockOutIndex]);
+            if (enemyTeam.Count <= 1)
+            {
+                Debug.Log("Win");
+            }
+            else
+            {
+                enemyTeam.Remove(enemyTeam[enemyTeamCurrentIndex]);
+                enemyTeamCurrentIndex = 0;
+                enemyTeam[enemyTeamCurrentIndex].transform.position = enemyPlace.position;
+                enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().EnterArena();
+                playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().SetTarget();
+                enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().SetTarget();
+            }
 
             return;
         }
@@ -160,5 +168,10 @@ public class GameManager : MonoBehaviour
         return;
     }
 
+
+    public void UpdatePlayerSlider(float amount)
+    {
+        UIManager.Instance.UpdateSlider(playerTeamCurrentIndex, amount);
+    }
 
 }

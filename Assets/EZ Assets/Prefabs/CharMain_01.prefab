@@ -204,11 +204,10 @@ GameObject:
   - component: {fileID: 4674081637985950127}
   - component: {fileID: 5816462682593053648}
   - component: {fileID: 7743773473694046807}
-  - component: {fileID: 2433881637537264983}
   - component: {fileID: 7971928266118359012}
   m_Layer: 0
   m_Name: CharMain_01
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,74 +294,6 @@ MonoBehaviour:
   anim: {fileID: 4674081637985950127}
   moveSpeed: 1
   target: {fileID: 0}
---- !u!114 &2433881637537264983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2122972254015428975}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e95e564847cfd26419742f37a8293f51, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pos:
-    m_Name: Pos
-    m_Type: 0
-    m_ExpectedControlType: Vector2
-    m_Id: 687245d0-2412-4a61-afdc-121f93ae63ee
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 8810c0c2-ee9a-4871-b17a-d613df9a6628
-      m_Path: <Touchscreen>/position
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Pos
-      m_Flags: 0
-    m_Flags: 0
-  press:
-    m_Name: Press
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: 2b17fd9b-4a45-436a-b923-64302a85c1ae
-    m_Processors: 
-    m_Interactions: Press
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: b1eaf020-6950-40c0-9c87-b9da12823162
-      m_Path: <Touchscreen>/Press
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Press
-      m_Flags: 0
-    m_Flags: 0
-  doubleTap:
-    m_Name: Double Tap
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: 1c9fe7fc-84a8-4466-b5e9-83b4d5da33a5
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 97d37391-65d1-41b2-ac33-77d8a73d7ee5
-      m_Path: <Touchscreen>/touch*/Press
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Double Tap
-      m_Flags: 0
-    m_Flags: 0
-  swipeThreshold: 100
-  tapThreshold: 10
-  tapTimeThreshold: 0.3
-  doubleTapThreshold: 50
-  doubleTapTimeThreshold: 0.5
 --- !u!54 &7971928266118359012
 Rigidbody:
   m_ObjectHideFlags: 0
