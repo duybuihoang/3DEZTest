@@ -36,7 +36,6 @@ public class DamageSender : MonoBehaviour
 
     public void Send(float amount, string anim)
     {
-        Debug.Log(receiver);
         receiver?.Deduct(amount, anim);
     }
 }

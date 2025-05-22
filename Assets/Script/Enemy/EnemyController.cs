@@ -32,13 +32,10 @@ public class EnemyController : Entity
 
         sender = GetComponentInChildren<DamageSender>();
         receiver = GetComponentInChildren<DamageReceiver>();
-
-    }
-
-    private void Start()
-    {
         stateMachine = new StateMachine();
 
+        Predicates.Add("Waiting", true);
+        Predicates.Add("Idle", false);
 
         Predicates.Add("HeadPunch", false);
         Predicates.Add("KidneyPunchLeft", false);
@@ -52,6 +49,7 @@ public class EnemyController : Entity
         Predicates.Add("Knock Out", false);
 
         EnemyIdleState idleState = new EnemyIdleState(this, anim);
+        EnemyWaitingState waitingState = new EnemyWaitingState(this, anim);
 
         EnemyHeadPunchState headPunchState = new EnemyHeadPunchState(this, anim);
         EnemyKidneyPunchLeftState kidneyPunchLeftState = new EnemyKidneyPunchLeftState(this, anim);
@@ -63,6 +61,10 @@ public class EnemyController : Entity
         EnemyKidneyHitState kidneyHitState = new EnemyKidneyHitState(this, anim);
         EnemyStomachHitState stomachHitState = new EnemyStomachHitState(this, anim);
         EnemyKnockOutState knockOutState = new EnemyKnockOutState(this, anim);
+
+        At(waitingState, idleState, new FuncPredicate(() => !Predicates["Waiting"]));
+        Any(waitingState, new FuncPredicate(() => Predicates["Waiting"]));
+
 
         At(idleState, headPunchState, new FuncPredicate(() => Predicates["HeadPunch"]));
         At(headPunchState, idleState, new FuncPredicate(() => !Predicates["HeadPunch"]));
@@ -90,9 +92,20 @@ public class EnemyController : Entity
         At(kidneyHitState, idleState, new FuncPredicate(() => !Predicates["Kidney Hit"]));
 
 
-        stateMachine.SetState(idleState);
+        stateMachine.SetState(waitingState);
 
         target = GameManager.Instance.GetCurrentPlayer();
+
+    }
+
+    public void SetTarget(GameObject target)
+    {
+
+    }
+
+    private void Start()
+    {
+       
     }
 
     private void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -106,7 +119,7 @@ public class EnemyController : Entity
         StomachHitCheck();
         KidneyHitCheck();
         KnockOutCheck();
-        BehaviourCheck();
+        //BehaviourCheck();
 
     }
 
@@ -135,6 +148,8 @@ public class EnemyController : Entity
         receiver.JustGotDamage = false;
     }
 
+
+
     private void BehaviourCheck()
     {
         if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f)
@@ -149,6 +164,7 @@ public class EnemyController : Entity
 
     public void Jump()
     {
+        if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f) return;
         controller.Move(forwardDirection * moveSpeed * Time.deltaTime);
     }
 
@@ -186,13 +202,34 @@ public class EnemyController : Entity
         sender.Send(damage, hitAnimation);
     }
 
-
-    //private void OnDrawGizmos()
-    //{
-    //    Debug.DrawLine(this.transform.position, target.transform.position, Color.red);
-    //}
-
     public void ResetRotation()
     {
+    }
+
+    private void KnockOut()
+    {
+        GameManager.Instance.OnCharacterKnockOut(this.gameObject);
+        Destroy(gameObject);
+    }
+
+    public void EnterArena()
+    {
+        ResetDict();
+        Predicates["Waiting"] = false;
+    }
+
+    public void ExitArena()
+    {
+        ResetDict();
+        Predicates["Waiting"] = true;
+    }
+
+    public void ResetDict()
+    {
+        List<string> keys = new List<string>(Predicates.Keys);
+        foreach (var key in keys)
+        {
+            Predicates[key] = false;
+        }
     }
 }

@@ -38,6 +38,9 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Predicates.Add("Idle", false);
+        Predicates.Add("Waiting", true);
+
         Predicates.Add("HeadPunch", false);
         Predicates.Add("KidneyPunchLeft", false);
         Predicates.Add("KidneyPunchRight", false);
@@ -73,6 +76,8 @@ public class PlayerController : MonoBehaviour
         #region state
 
         IdleState idleState = new IdleState(this, anim);
+        WaitingState waitingState = new WaitingState(this, anim);
+
         HeadPunchState headPunchState = new HeadPunchState(this, anim);
         KidneyPunchLeftState kidneyPunchLeftState = new KidneyPunchLeftState(this, anim);
         KidneyPunchRightState kidneyPunchRightState = new KidneyPunchRightState(this, anim);
@@ -87,6 +92,10 @@ public class PlayerController : MonoBehaviour
 
         #endregion
         #region transition
+
+        At(waitingState, idleState, new FuncPredicate(() => !Predicates["Waiting"]));
+        Any(waitingState , new FuncPredicate(() => Predicates["Waiting"]));
+
 
         At(idleState, headPunchState, new FuncPredicate(() => Predicates["HeadPunch"]));
         At(headPunchState, idleState, new FuncPredicate(() => !Predicates["HeadPunch"]));
@@ -116,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
         #endregion
 
-        stateMachine.SetState(idleState);
+        stateMachine.SetState(waitingState);
     }
 
     private void Start()
@@ -188,6 +197,18 @@ public class PlayerController : MonoBehaviour
 
     }
     //private void HeadHitCheck() => Predicates["Head Hit"] = receiver.JustGotDamage && !receiver.IsDead() && receiver.AttackAnimation == "Head Hit";
+
+    public void EnterArena()
+    {
+        ResetDict();
+        Predicates["Waiting"] = false;
+    }
+
+    public void ExitArena()
+    {
+        ResetDict();
+        Predicates["Waiting"] = true;
+    }
 
     private void DoHitCheck(string name)
     {
@@ -269,7 +290,7 @@ public class PlayerController : MonoBehaviour
                 break;
             case "KidneyPunchRight":
                 hitAnimation = "Kidney Hit";
-                damage = 3;
+                damage = 5;
                 break;
             case "Stomach Punch":
                 hitAnimation = "Stomach Hit";
@@ -282,4 +303,9 @@ public class PlayerController : MonoBehaviour
         sender.Send(damage, hitAnimation);
     }
 
+    private void KnockOut()
+    {
+        GameManager.Instance.OnCharacterKnockOut(this.gameObject);
+        Destroy(gameObject);
+    }
 }
