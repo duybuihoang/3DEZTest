@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     private float maxDelayTime = 2f;
     [SerializeField] private float delayConstant = 0.15f;
 
+    private int maxLevel = 10;
 
 
     private void Awake()
@@ -202,8 +203,15 @@ public class GameManager : MonoBehaviour
     {
         foreach (var enemy in enemyTeam)
         {
-            enemy.GetComponent<EnemyController>().SetDelayTime(maxDelayTime - delayConstant * LevelLoader.level);
+            enemy.GetComponent<EnemyController>().SetDelayTime(
+                calculateDelayByLevel(LevelLoader.level), calculateDelayByLevel(LevelLoader.level + 1));
         }
     }
 
+
+    private float calculateDelayByLevel(int level)
+    {
+        if (maxLevel - level == 0) return 0;
+        return maxDelayTime - delayConstant * level;
+    }
 }

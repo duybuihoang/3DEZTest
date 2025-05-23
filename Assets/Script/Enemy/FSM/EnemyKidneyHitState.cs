@@ -12,8 +12,6 @@ public class EnemyKidneyHitState : EnemyBaseState
     {
         base.OnEnter();
 
-        Debug.Log("kidney hit");
-
         if (!isHit)
         {
             isHit = true;

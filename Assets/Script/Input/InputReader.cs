@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class InputReader : MonoBehaviour
 {
@@ -65,7 +66,9 @@ public class InputReader : MonoBehaviour
 
             if(tapDuration < tapTimeThreshold && delta.magnitude < tapThreshold)
             {
-                DetectTap(currentPos);
+                //DetectTap(currentPos);
+                TapTriggered(delta);
+
             }
             else
             {

@@ -2109,6 +2109,7 @@ MonoBehaviour:
   - {fileID: 74385927}
   playerPlace: {fileID: 2038854269}
   enemyPlace: {fileID: 1268582557}
+  delayConstant: 0.15
 --- !u!4 &807296778
 Transform:
   m_ObjectHideFlags: 0

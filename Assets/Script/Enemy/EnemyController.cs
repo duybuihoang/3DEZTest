@@ -27,7 +27,12 @@ public class EnemyController : Entity
     [SerializeField] private float moveSpeed = 1f;
 
     private float maxDelayTime = 2f;
+    private float minDelayTime = 2f;
+    private float delayedTime;
     private float actionTime;
+
+    string[] attacks = { "HeadPunch", "KidneyPunchLeft", "KidneyPunchRight", "Stomach Punch" };
+
 
     private void Awake()
     {
@@ -44,6 +49,7 @@ public class EnemyController : Entity
         Predicates.Add("KidneyPunchLeft", false);
         Predicates.Add("KidneyPunchRight", false);
         Predicates.Add("Stomach Punch", false);
+
         Predicates.Add("Big Jump", false);
 
         Predicates.Add("Head Hit", false);
@@ -104,6 +110,7 @@ public class EnemyController : Entity
     private void Start()
     {
         actionTime = Time.time;
+        delayedTime = Random.Range(minDelayTime, maxDelayTime);
     }
 
     private void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -150,12 +157,14 @@ public class EnemyController : Entity
 
     private void BehaviourCheck()
     {
-        if (Time.time >= actionTime + maxDelayTime)
+        if (Time.time >= actionTime + delayedTime)
         {
             actionTime = Time.time;
+            delayedTime = Random.Range(minDelayTime, maxDelayTime);
+
             if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f)
             {
-                DoAction("HeadPunch");
+                DoAction(attacks[Random.Range(0, attacks.Length)]);
             }
             else
             {
@@ -163,6 +172,8 @@ public class EnemyController : Entity
             }
         }
     } 
+
+
 
     public void Jump()
     {
@@ -241,5 +252,9 @@ public class EnemyController : Entity
         target = GameManager.Instance.GetCurrentPlayer();
     }
 
-    public void SetDelayTime(float amount) => maxDelayTime = amount;
+    public void SetDelayTime(float max, float min)
+    {
+        maxDelayTime = max;
+        minDelayTime = min;
+    }
 }
