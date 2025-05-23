@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DamageReceiver : MonoBehaviour
@@ -18,14 +19,16 @@ public class DamageReceiver : MonoBehaviour
 
     public void Deduct(float amount, string attackAnim)
     {
-        this.currentHP -= amount;
-        Debug.Log("deduct HP to: " + this.currentHP);
-        if(transform.parent.tag == "Player")
-            GameManager.Instance.UpdatePlayerSlider(currentHP / maxHP);
+        if (!this.IsDestroyed())
+        {
+            this.currentHP -= amount;
+            if (transform.parent.tag == "Player")
+                GameManager.Instance.UpdatePlayerSlider(currentHP / maxHP);
 
-        justGotDamage = true;
-        this.attackAnimation = attackAnim;
-        this.IsDead();
+            justGotDamage = true;
+            this.attackAnimation = attackAnim;
+            this.IsDead();
+        }
     }
 
     public bool IsDead()

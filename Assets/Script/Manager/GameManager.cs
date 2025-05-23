@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         }
 
         instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
 
     }
 
@@ -160,6 +160,9 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                UIManager.Instance.DisableButton(playerTeamCurrentIndex);
+                UIManager.Instance.DestroyButton();
+
                 playerTeam.Remove(playerTeam[playerTeamCurrentIndex]);
                 playerTeamCurrentIndex = 0;
                 playerTeam[playerTeamCurrentIndex].transform.position = playerPlace.position;

@@ -1468,7 +1468,7 @@ MonoBehaviour:
   anim: {fileID: 1943187249992631569}
   controller: {fileID: 0}
   target: {fileID: 0}
-  attackDistance: 0.7
+  attackDistance: 0.6
   moveSpeed: 1
 --- !u!143 &4349766895179603625
 CharacterController:

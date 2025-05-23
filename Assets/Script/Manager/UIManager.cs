@@ -71,16 +71,18 @@ public class UIManager : MonoBehaviour
     public void DisableButton(int idx)
     {
         PlayerButton[idx].interactable = false;
-
-        for (int i = 0; i < PlayerButton.Count; i++)
-        {
-            Debug.Log(PlayerButton[i].interactable);
-        }
     }
 
     public void UpdateSlider(int idx,float value)
     {
         PlayerButton[idx].GetComponentInChildren<Slider>().value = value;
+    }
+
+    public void DestroyButton()
+    {
+        PlayerButton.RemoveAt(currentButton);
+        currentButton = 0;
+        PlayerButton[currentButton].interactable = true;
     }
 
 }

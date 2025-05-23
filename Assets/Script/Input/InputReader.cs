@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Experimental.GlobalIllumination;
@@ -15,9 +16,9 @@ public class InputReader : MonoBehaviour
 
     [SerializeField] private float swipeThreshold = 100f;
     [SerializeField] private float tapThreshold = 10f;
-    [SerializeField] private float tapTimeThreshold = .3f;
+    [SerializeField] private float tapTimeThreshold = .1f;
     [SerializeField] private float doubleTapThreshold = 50f;
-    [SerializeField] private float doubleTapTimeThreshold = .5f;
+    [SerializeField] private float doubleTapTimeThreshold = .1f;
 
     #endregion
 
@@ -66,9 +67,7 @@ public class InputReader : MonoBehaviour
 
             if(tapDuration < tapTimeThreshold && delta.magnitude < tapThreshold)
             {
-                //DetectTap(currentPos);
-                TapTriggered(delta);
-
+                DetectTap(currentPos);
             }
             else
             {
@@ -119,7 +118,7 @@ public class InputReader : MonoBehaviour
             lastTapTime = currentTime;
             lastTapPosition = position;
 
-            StartCoroutine(WaitForSecondTap(position));
+            if(!this.IsDestroyed()) StartCoroutine(WaitForSecondTap(position));
         }
     }
 

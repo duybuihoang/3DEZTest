@@ -146,8 +146,6 @@ public class EnemyController : Entity
             return;
         }
 
-        Debug.Log("reset");
-
         Predicates[state] = false;
         currentAction = "";
         receiver.JustGotDamage = false;
@@ -161,14 +159,16 @@ public class EnemyController : Entity
         {
             actionTime = Time.time;
             delayedTime = Random.Range(minDelayTime, maxDelayTime);
-
-            if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f)
+            if (target != null)
             {
-                DoAction(attacks[Random.Range(0, attacks.Length)]);
-            }
-            else
-            {
-                DoAction("Big Jump");
+                if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f)
+                {
+                    DoAction(attacks[Random.Range(0, attacks.Length)]);
+                }
+                else
+                {
+                    DoAction("Big Jump");
+                }
             }
         }
     } 
