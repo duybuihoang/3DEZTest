@@ -26,6 +26,9 @@ public class EnemyController : Entity
     [Header("Moving Data")]
     [SerializeField] private float moveSpeed = 1f;
 
+    private float maxDelayTime = 2f;
+    private float actionTime;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -98,14 +101,9 @@ public class EnemyController : Entity
 
     }
 
-    public void SetTarget(GameObject target)
-    {
-
-    }
-
     private void Start()
     {
-       
+        actionTime = Time.time;
     }
 
     private void At(IState from, IState to, IPredicate condition) => stateMachine.AddTransition(from, to, condition);
@@ -152,13 +150,17 @@ public class EnemyController : Entity
 
     private void BehaviourCheck()
     {
-        if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f)
+        if (Time.time >= actionTime + maxDelayTime)
         {
-            DoAction("HeadPunch");
-        }
-        else
-        {
-            DoAction("Big Jump");
+            actionTime = Time.time;
+            if (Vector3.Distance(this.transform.position, target.transform.position) <= 0.7f)
+            {
+                DoAction("HeadPunch");
+            }
+            else
+            {
+                DoAction("Big Jump");
+            }
         }
     } 
 
@@ -238,4 +240,6 @@ public class EnemyController : Entity
     {
         target = GameManager.Instance.GetCurrentPlayer();
     }
+
+    public void SetDelayTime(float amount) => maxDelayTime = amount;
 }

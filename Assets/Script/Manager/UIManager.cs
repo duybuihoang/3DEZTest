@@ -45,6 +45,11 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void ResetUI()
+    {
+        PlayerButton.Clear();
+    }
+
     public void AddEnemyUIInfo(float maxHealth)
     {
         EnemyButton.Add(Instantiate(EnemyButtonPrefab, enemyUISpace).GetComponent<Button>());

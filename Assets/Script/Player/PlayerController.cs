@@ -218,15 +218,9 @@ public class PlayerController : MonoBehaviour
         Predicates["Waiting"] = true;
     }
 
-    private void DoHitCheck(string name)
+    public void SetTarget(GameObject target)
     {
-        Predicates[name] = receiver.JustGotDamage && !receiver.IsDead() && receiver.AttackAnimation == name;
-        if (Predicates[name])
-        {
-            Predicates[currentAction] = false;
-            currentAction = "";
-            currentAction = name;
-        }
+        this.target = target;
     }
 
     private void HeadHitCheck()

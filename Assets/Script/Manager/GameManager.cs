@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.SceneManagement;
 
-enum GameMode
+public enum GameMode
 {
     Single, 
     SingleVsMultiple, 
@@ -16,6 +19,7 @@ public class GameManager : MonoBehaviour
 {
 
     [SerializeField] private GameMode mode;
+    private int Level = 1;
 
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject enemyPrefab;
@@ -34,6 +38,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get => instance; }
     private static GameManager instance;
 
+    private float maxDelayTime = 2f;
+    [SerializeField] private float delayConstant = 0.15f;
+
+
 
     private void Awake()
     {
@@ -44,12 +52,22 @@ public class GameManager : MonoBehaviour
         }
 
         instance = this;
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
 
     }
 
     private void Start()
     {
+        mode = LevelLoader.gameMode;
+        Level = LevelLoader.level;
+        SetUpGame();
+    }
+
+    public void SetUpGame()
+    {
+        playerTeam.Clear();
+        enemyTeam.Clear();
+        UIManager.Instance.ResetUI();
 
         switch (mode)
         {
@@ -95,10 +113,13 @@ public class GameManager : MonoBehaviour
 
 
         playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().EnterArena();
+        playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().SetTarget();
+
         enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().EnterArena();
+        enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().SetTarget();
 
         UIManager.Instance.DisableButton(0);
-
+        SetEnemyDelayTime();
     }
 
     public GameObject GetCurrentPlayer() => playerTeam[playerTeamCurrentIndex];
@@ -120,6 +141,10 @@ public class GameManager : MonoBehaviour
         playerTeam[playerTeamCurrentIndex].GetComponent<PlayerController>().SetTarget();
         enemyTeam[enemyTeamCurrentIndex].GetComponent<EnemyController>().SetTarget();
 
+
+
+
+
     }
 
     public void OnCharacterKnockOut(GameObject GO)
@@ -129,7 +154,7 @@ public class GameManager : MonoBehaviour
         {
             if (playerTeam.Count <= 1)
             {
-                Debug.Log("Lose");
+                SceneManager.LoadScene("Menu");
 
             }
             else
@@ -151,6 +176,7 @@ public class GameManager : MonoBehaviour
             if (enemyTeam.Count <= 1)
             {
                 Debug.Log("Win");
+                SceneManager.LoadScene("Menu");
             }
             else
             {
@@ -167,11 +193,17 @@ public class GameManager : MonoBehaviour
 
         return;
     }
-
-
     public void UpdatePlayerSlider(float amount)
     {
         UIManager.Instance.UpdateSlider(playerTeamCurrentIndex, amount);
+    }
+
+    public void SetEnemyDelayTime()
+    {
+        foreach (var enemy in enemyTeam)
+        {
+            enemy.GetComponent<EnemyController>().SetDelayTime(maxDelayTime - delayConstant * LevelLoader.level);
+        }
     }
 
 }

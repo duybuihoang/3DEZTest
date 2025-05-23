@@ -13,7 +13,6 @@ public class EnemyHeadHitState : EnemyBaseState
     {
         base.OnEnter();
 
-        Debug.Log("Head hit");
 
         if (!isHit)
         {
